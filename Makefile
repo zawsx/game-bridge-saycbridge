@@ -6,22 +6,6 @@ scripts_dir = scripts
 appengine_dir = dist/gae
 appengine_scripts_dir = $(appengine_dir)/scripts
 
-THIRD_PARTY_SCRIPTS = \
-	third_party/jquery-1.6.2.min.js \
-	third_party/jquery.history.js \
-	third_party/bignumber.js \
-
-SCRIPTS = \
-	model.js \
-	controller.js \
-	fight.js \
-	view.js \
-	controller.js \
-	controller.test.js \
-	new_bidder.js \
-	play.js \
-	play.test.js \
-	recap.js \
 
 PYTHON_PACKAGES=networkx unittest2 werkzeug webapp2 webob jinja2
 # Prod packages: cherrypy
@@ -53,7 +37,8 @@ check: clean env
 	@$(scripts_dir)/test-sayc -f > $(src_dir)/z3b_actual.txt && diff -U 7 $(src_dir)/z3b_baseline.txt $(src_dir)/z3b_actual.txt ; true
 
 serve: clean
-	coffee --watch --compile $(appengine_scripts_dir)/*.coffee &
+	# Source map generation uses passed-in paths.
+	cd $(appengine_dir); coffee --watch --map --compile scripts/*.coffee &
 	# FIXME: Doesn't python just have a -C to change CWD before executing?
 	cd $(appengine_dir); python2.7 standalone_main.py
 
